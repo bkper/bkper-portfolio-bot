@@ -1,5 +1,5 @@
 {
-  "name": "stock-bot-gcf",
+  "name": "portfolio-bot-gcf",
   "version": "1.3.0",
   "license": "MIT",
   "main": "index.js",
