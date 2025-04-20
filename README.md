@@ -1,6 +1,6 @@
 # Bkper Portfolio Bot
 
-Automatically manages investment portfolios by tracking stocks, bonds, and other financial instruments on a dedicated portfolio book. Synchronizes transactions, maintains precise quantities, and calculates realized gains/losses using the FIFO method
+The Portfolio Bot automatically manages investment portfolios by tracking stocks, bonds, and other financial instruments on a dedicated portfolio book. Synchronizes transactions, maintains precise quantities, and calculates realized gains/losses using the FIFO method.
 
 ![Portfolio Bot](https://docs.google.com/drawings/d/e/2PACX-1vQSjFxT6jVtwaiuDOEaDOaruFHWDp8YtT91lNUCw4BruKm3ZED__g1D4-5iAoi-J23j4v55Tk6ETg9R/pub?w=2848&h=1306)
 
