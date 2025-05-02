@@ -90,3 +90,5 @@ After forwarding, future FIFO calculations will use the new Forward valuation. T
 
 **Important:**
 The Portfolio Bot automatically adds properties to transactions in the Portfolio Book during the forwarding process. These properties are used for state and log control and **must not** be manually altered.
+
+**As a rule of thumb:** only make edits, updates, deletes on the Financial book and never on the Inventory book.
