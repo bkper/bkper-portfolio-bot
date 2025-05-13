@@ -92,3 +92,7 @@ After forwarding, future FIFO calculations will use the new Forward valuation. T
 The Portfolio Bot automatically adds properties to transactions in the Portfolio Book during the forwarding process. These properties are used for state and log control and **must not** be manually altered.
 
 **As a rule of thumb:** only make edits, updates, deletes on the Financial book and never on the Inventory book.
+
+## Detailed user Guide on Bkper Help center
+[Bkper Portfolio Bot](https://help.bkper.com/en/articles/5388213-bkper-portfolio-bot)   
+
