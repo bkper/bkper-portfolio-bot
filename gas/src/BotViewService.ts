@@ -91,7 +91,7 @@ namespace BotViewService {
             template.permissionGranted = true;
         }
 
-        return template.evaluate().setTitle('Stock Bot');
+        return template.evaluate().setTitle('Stock Bot').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
     }
 
     function checkIfAllBooksAreUnlocked(baseBook: Bkper.Book): boolean {
