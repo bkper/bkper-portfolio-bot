@@ -345,6 +345,9 @@
 
   function closeWindow() {
     try {
+      // Try to communicate with parent (iframe context)
+      parent.postMessage({ type: 'close' }, '*');
+      // Fallback for standalone usage
       window.top.close();
     } catch (error) {
       console.log("Attempt to automatically close window failed: " + error);
