@@ -141,7 +141,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
         stockAccount = new Account(stockBook)
           .setName(financialAccount.name)
           .setType(financialAccount.type as AccountType)
-          .setProperties(financialAccount.properties)
+          .setVisibleProperties(financialAccount.properties)
           .setArchived(financialAccount.archived);
         if (financialAccount.groups) {
           for (const financialGroup of financialAccount.groups) {
@@ -152,7 +152,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
                 stockGroup = await new Group(stockBook)
                   .setHidden(financialGroup.hidden)
                   .setName(financialGroup.name)
-                  .setProperties(financialGroup.properties)
+                  .setVisibleProperties(financialGroup.properties)
                   .create()
                 ;
               }

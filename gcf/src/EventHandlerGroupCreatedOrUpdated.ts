@@ -6,7 +6,7 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
     let connectedGroup = await new Group(stockBook)
       .setName(financialGroup.name)
       .setHidden(financialGroup.hidden)
-      .setProperties(financialGroup.properties)
+      .setVisibleProperties(financialGroup.properties)
       .create();
     let bookAnchor = super.buildBookAnchor(stockBook);
     return `${bookAnchor}: GROUP ${connectedGroup.getName()} CREATED`;
@@ -15,7 +15,7 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
     await stockGroup
     .setName(financialGroup.name)
     .setHidden(financialGroup.hidden)
-    .setProperties(financialGroup.properties)
+    .setVisibleProperties(financialGroup.properties)
     .update();
     let bookAnchor = super.buildBookAnchor(stockBook);
     return `${bookAnchor}: GROUP ${stockGroup.getName()} UPDATED`;

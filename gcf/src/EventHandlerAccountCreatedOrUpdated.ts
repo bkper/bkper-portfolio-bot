@@ -34,7 +34,7 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
             connectedGroup = await new Group(stockBook)
               .setHidden(baseGroup.isHidden())
               .setName(baseGroup.getName())
-              .setProperties(baseGroup.getProperties())
+              .setVisibleProperties(baseGroup.getProperties())
               .create();
           }
           stockAccount.addGroup(connectedGroup);
