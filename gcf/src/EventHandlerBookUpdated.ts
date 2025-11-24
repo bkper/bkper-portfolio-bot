@@ -1,16 +1,15 @@
 import { Book } from "bkper-js";
 import { STOCK_HISTORICAL_PROP, EXC_HISTORICAL_PROP, STOCK_BOOK_PROP } from "./constants.js";
 import { EventHandler } from "./EventHandler.js";
-import { isStockBook, getBaseBook } from "./BotService.js";
 
 export class EventHandlerBookUpdated extends EventHandler {
 
     protected async processObject(book: Book, connectedBook: Book, event: bkper.Event): Promise<string> {
 
         let response = '';
-        const baseBook = getBaseBook(book);
+        const baseBook = this.botService.getBaseBook(book);
 
-        if (isStockBook(book)) {
+        if (this.botService.isStockBook(book)) {
             // stock_historical prop
             const stockHistorical = book.getProperty(STOCK_HISTORICAL_PROP);
             if (stockHistorical != baseBook.getProperty(EXC_HISTORICAL_PROP)) {
@@ -38,7 +37,6 @@ export class EventHandlerBookUpdated extends EventHandler {
         }
 
         return null;
-
     }
 
 }

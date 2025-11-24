@@ -1,18 +1,21 @@
 import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper-js";
 import { Result } from "./index.js";
-import { getRealizedDateValue, getStockExchangeCode } from "./BotService.js";
 import * as constants from "./constants.js";
 import { EventHandlerTransaction } from "./EventHandlerTransaction.js";
 import { InterceptorFlagRebuild } from "./InterceptorFlagRebuild.js";
+import { AppContext } from "./AppContext.js";
 
 export class EventHandlerTransactionChecked extends EventHandlerTransaction {
+  constructor(context: AppContext) {
+    super(context);
+  }
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
     return `remoteId:${transaction.id}`;
   }
 
   async intercept(baseBook: Book, event: bkper.Event): Promise<Result> {
-    let response = await new InterceptorFlagRebuild().intercept(baseBook, event);
+    let response = await new InterceptorFlagRebuild(this.context).intercept(baseBook, event);
     return response;
   }
 
@@ -124,14 +127,14 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
   }
 
   private checkLastTxDate(stockAccount: Account, transaction: bkper.Transaction) {
-    let lastTxDate = getRealizedDateValue(stockAccount);
+    let lastTxDate = this.botService.getRealizedDateValue(stockAccount);
     if (lastTxDate != null && transaction.dateValue <= +lastTxDate) {
       stockAccount.setProperty(constants.NEEDS_REBUILD_PROP, 'TRUE').update();
     }
   }
 
   private async getConnectedStockAccount(financialBook: Book, stockBook: Book, financialAccount: bkper.Account): Promise<Account> {
-    let stockExchangeCode = getStockExchangeCode(financialAccount);
+    let stockExchangeCode = this.botService.getStockExchangeCode(financialAccount);
     if (stockExchangeCode != null) {
       let stockAccount = await stockBook.getAccount(financialAccount.name);
       if (stockAccount == null) {

@@ -1,12 +1,15 @@
 import { Amount, Book, Transaction } from "bkper-js";
 import { Result } from "./index.js";
-import { flagStockAccountForRebuildIfNeeded, isPurchase, isSale } from "./BotService.js";
 import { ORIGINAL_AMOUNT_PROP, ORIGINAL_QUANTITY_PROP, PURCHASE_PRICE_PROP, SALE_PRICE_PROP } from "./constants.js";
 import { EventHandlerTransaction } from "./EventHandlerTransaction.js";
 import { InterceptorOrderProcessor } from "./InterceptorOrderProcessor.js";
 import { InterceptorOrderProcessorDeleteFinancial } from "./InterceptorOrderProcessorDeleteFinancial.js";
+import { AppContext } from "./AppContext.js";
 
 export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
+    constructor(context: AppContext) {
+        super(context);
+    }
 
     async intercept(baseBook: Book, event: bkper.Event): Promise<Result> {
         if (this.shouldCascadeDeletion(event)) {
@@ -62,11 +65,11 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
             .setProperty(ORIGINAL_AMOUNT_PROP, originalAmount.toString())
         ;
 
-        if (await isPurchase(stockTransaction)) {
+        if (await this.botService.isPurchase(stockTransaction)) {
             stockTransaction.setProperty(PURCHASE_PRICE_PROP, price.toString());
         }
 
-        if (await isSale(stockTransaction)) {
+        if (await this.botService.isSale(stockTransaction)) {
             stockTransaction.setProperty(SALE_PRICE_PROP, price.toString());
         }
 
@@ -78,7 +81,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
             await stockTransaction.update();
         }
 
-        await flagStockAccountForRebuildIfNeeded(stockTransaction);
+        await this.botService.flagStockAccountForRebuildIfNeeded(stockTransaction);
 
         let bookAnchor = super.buildBookAnchor(stockBook);
         let record = `EDITED: ${stockTransaction.getDateFormatted()} ${quantity} ${await stockTransaction.getCreditAccountName()} ${await stockTransaction.getDebitAccountName()} ${stockTransaction.getDescription()}`;

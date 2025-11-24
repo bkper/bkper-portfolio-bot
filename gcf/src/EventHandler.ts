@@ -1,8 +1,16 @@
-import { Bkper, Book } from "bkper-js";
+import { Book } from "bkper-js";
 import { Result } from "./index.js";
-import { getStockBook } from "./BotService.js";
+import { BotService } from "./BotService.js";
+import { AppContext } from "./AppContext.js";
 
 export abstract class EventHandler {
+  protected context: AppContext;
+  protected botService: BotService;
+
+  constructor(context: AppContext) {
+    this.context = context;
+    this.botService = new BotService(context);
+  }
 
   protected abstract processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string>;
 
@@ -12,7 +20,7 @@ export abstract class EventHandler {
 
   async handleEvent(event: bkper.Event): Promise<Result> {
 
-    let baseBook = new Book(event.book);
+    let baseBook = await this.context.bkper.getBook(event.bookId);
 
     let interceptionResponse = await this.intercept(baseBook, event);
     if (interceptionResponse.result) {
@@ -20,7 +28,7 @@ export abstract class EventHandler {
     }
     let responses: string[] = [];
 
-    let stockBook = getStockBook(baseBook);
+    let stockBook = this.botService.getStockBook(baseBook);
 
     const logtag = `Handling ${event.type} event on book ${baseBook.getName()} from user ${event.user.username} ${Math.random()}`;
     console.time(logtag);

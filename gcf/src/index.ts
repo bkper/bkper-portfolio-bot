@@ -1,11 +1,14 @@
 import 'source-map-support/register.js'
 import { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
 import { Bkper } from 'bkper-js';
-import { getOAuthToken } from 'bkper';
 import { Request, Response } from 'express';
 import express from 'express';
 import httpContext from 'express-http-context';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 
+import { AppContext } from './AppContext.js';
 import { EventHandlerTransactionPosted } from './EventHandlerTransactionPosted.js';
 import { EventHandlerTransactionChecked } from './EventHandlerTransactionChecked.js';
 import { EventHandlerTransactionUnchecked } from './EventHandlerTransactionUnchecked.js';
@@ -17,14 +20,11 @@ import { EventHandlerAccountDeleted } from './EventHandlerAccountDeleted.js';
 import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrUpdated.js';
 import { EventHandlerBookUpdated } from './EventHandlerBookUpdated.js';
 
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import path from 'path';
+// Ensure env at right location
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+dotenv.config({ path: resolve(__dirname, '../../.env') });
 
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename); // get the name of the directory
-
-dotenv.config({ path: `${__dirname}/../../.env` });
 
 const app = express();
 app.use(httpContext.middleware);
@@ -37,22 +37,22 @@ export type Result = {
   warning?: string
 }
 
-function init(req: Request, res: Response) {
+function init(req: Request, res: Response): AppContext {
+
   res.setHeader('Content-Type', 'application/json');
 
-  //Put OAuth token from header in the http context for later use when calling the API. https://julio.li/b/2016/10/29/request-persistence-express/
-  const oauthTokenHeader = 'bkper-oauth-token';
-  httpContext.set(oauthTokenHeader, req.headers[oauthTokenHeader]);
-
-  Bkper.setConfig({
-    oauthTokenProvider: process.env.NODE_ENV === 'development' ? async () => import('bkper').then(bkper => bkper.getOAuthToken()) : async () => httpContext.get(oauthTokenHeader),
+  const bkper = new Bkper({
+    oauthTokenProvider: async () => req.headers['bkper-oauth-token'] as string,
     apiKeyProvider: async () => process.env.BKPER_API_KEY || req.headers['bkper-api-key'] as string
   })
+
+  return new AppContext(httpContext, bkper);
+
 }
 
 async function handleEvent(req: Request, res: Response) {
 
-  init(req, res);
+  const context = init(req, res);
 
   try {
 
@@ -63,43 +63,43 @@ async function handleEvent(req: Request, res: Response) {
     switch (event.type) {
 
       case 'TRANSACTION_POSTED':
-        result = await new EventHandlerTransactionPosted().handleEvent(event);
+        result = await new EventHandlerTransactionPosted(context).handleEvent(event);
         break;
       case 'TRANSACTION_CHECKED':
-        result = await new EventHandlerTransactionChecked().handleEvent(event);
+        result = await new EventHandlerTransactionChecked(context).handleEvent(event);
         break;
       case 'TRANSACTION_UNCHECKED':
-        result = await new EventHandlerTransactionUnchecked().handleEvent(event);
+        result = await new EventHandlerTransactionUnchecked(context).handleEvent(event);
         break;
       case 'TRANSACTION_UPDATED':
-        result = await new EventHandlerTransactionUpdated().handleEvent(event);
+        result = await new EventHandlerTransactionUpdated(context).handleEvent(event);
         break;
       case 'TRANSACTION_DELETED':
-        result = await new EventHandlerTransactionDeleted().handleEvent(event);
+        result = await new EventHandlerTransactionDeleted(context).handleEvent(event);
         break;
       case 'TRANSACTION_RESTORED':
-        result = await new EventHandlerTransactionRestored().handleEvent(event);
+        result = await new EventHandlerTransactionRestored(context).handleEvent(event);
         break;
       case 'ACCOUNT_CREATED':
-        result = await new EventHandlerAccountCreatedOrUpdated().handleEvent(event);
+        result = await new EventHandlerAccountCreatedOrUpdated(context).handleEvent(event);
         break;
       case 'ACCOUNT_UPDATED':
-        result = await new EventHandlerAccountCreatedOrUpdated().handleEvent(event);
+        result = await new EventHandlerAccountCreatedOrUpdated(context).handleEvent(event);
         break;
       case 'ACCOUNT_DELETED':
-        result = await new EventHandlerAccountDeleted().handleEvent(event);
+        result = await new EventHandlerAccountDeleted(context).handleEvent(event);
         break;
       case 'GROUP_CREATED':
-        result = await new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
+        result = await new EventHandlerGroupCreatedOrUpdated(context).handleEvent(event);
         break;
       case 'GROUP_UPDATED':
-        result = await new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
+        result = await new EventHandlerGroupCreatedOrUpdated(context).handleEvent(event);
         break;
       case 'GROUP_DELETED':
-        result = await new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
+        result = await new EventHandlerGroupCreatedOrUpdated(context).handleEvent(event);
         break;
       case 'BOOK_UPDATED':
-        result = await new EventHandlerBookUpdated().handleEvent(event);
+        result = await new EventHandlerBookUpdated(context).handleEvent(event);
         break;
 
     }
