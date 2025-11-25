@@ -1,5 +1,4 @@
 import { Amount, Book, Transaction } from "bkper-js";
-import { BotService } from "./BotService.js";
 import { QUANTITY_PROP } from "./constants.js";
 import { EventHandler } from "./EventHandler.js";
 

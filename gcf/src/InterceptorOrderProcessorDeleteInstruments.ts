@@ -1,6 +1,5 @@
 import { Account, Book, Transaction } from "bkper-js";
 import { Result } from "./index.js";
-import { getExchangeCode, getFinancialBook } from "./BotService.js";
 import { InterceptorOrderProcessorDelete } from "./InterceptorOrderProcessorDelete.js";
 
 export class InterceptorOrderProcessorDeleteInstruments extends InterceptorOrderProcessorDelete {
@@ -19,8 +18,8 @@ export class InterceptorOrderProcessorDeleteInstruments extends InterceptorOrder
         if (!stockAccount) {
             return {result: false};
         }
-        let stockExcCode = await getExchangeCode(stockAccount);
-        let financialBook = await getFinancialBook(stockBook, stockExcCode);
+        let stockExcCode = await this.botService.getExchangeCode(stockAccount);
+        let financialBook = await this.botService.getFinancialBook(stockBook, stockExcCode);
 
         this.cascadeDelete(financialBook, transactionPayload);
 

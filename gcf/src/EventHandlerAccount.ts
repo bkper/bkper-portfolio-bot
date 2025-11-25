@@ -1,15 +1,14 @@
 import { Account, Book } from "bkper-js";
-import { getExcCode, getStockExchangeCode } from "./BotService.js";
 import { EventHandler } from "./EventHandler.js";
 
 export abstract class EventHandlerAccount extends EventHandler {
 
   protected async processObject(financialBook: Book, stockBook: Book, event: bkper.Event): Promise<string> {
-    let excCode = getExcCode(financialBook);
+    let excCode = this.botService.getExcCode(financialBook);
     let financialAccount = event.data.object as bkper.Account;
 
     let baseAccount = financialAccount;
-    let stockExcCode = getStockExchangeCode(baseAccount);
+    let stockExcCode = this.botService.getStockExchangeCode(baseAccount);
 
     if (!this.matchStockExchange(stockExcCode, excCode)) {
       return null;

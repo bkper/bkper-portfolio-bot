@@ -1,12 +1,11 @@
 import { Book, Group } from "bkper-js";
-import { getExcCode } from "./BotService.js";
 import { STOCK_EXC_CODE_PROP } from "./constants.js";
 import { EventHandler } from "./EventHandler.js";
 
 export abstract class EventHandlerGroup extends EventHandler {
 
   protected async processObject(financialBook: Book, stockBook: Book, event: bkper.Event): Promise<string> {
-    let excCode = getExcCode(financialBook);
+    let excCode = this.botService.getExcCode(financialBook);
     let group = event.data.object as bkper.Group;
 
     let stockExcCode = group.properties[STOCK_EXC_CODE_PROP];

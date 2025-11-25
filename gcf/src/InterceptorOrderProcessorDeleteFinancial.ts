@@ -1,6 +1,5 @@
 import { Book } from "bkper-js";
 import { Result } from "./index.js";
-import { flagStockAccountForRebuildIfNeeded, getStockBook } from "./BotService.js";
 import { FEES_PROP, INSTRUMENT_PROP, INTEREST_PROP, STOCK_BOT_AGENT_ID, STOCK_GAIN_HASHTAG, STOCK_LOSS_HASHTAG, EXCHANGE_GAIN_HASHTAG, EXCHANGE_LOSS_HASHTAG, FX_PREFIX } from "./constants.js";
 import { InterceptorOrderProcessorDelete } from "./InterceptorOrderProcessorDelete.js";
 
@@ -33,12 +32,12 @@ export class InterceptorOrderProcessorDeleteFinancial extends InterceptorOrderPr
         }
 
         if (this.isTransactionStockGainOrLoss(transactionPayload) || this.isTransactionExchangeGainOrLoss(transactionPayload)) {
-            const stockBook = getStockBook(financialBook);
+            const stockBook = this.botService.getStockBook(financialBook);
             if (stockBook && transactionPayload.remoteIds) {
                 for (const remoteId of transactionPayload.remoteIds) {
                     let stockBookTransaction = await stockBook.getTransaction(remoteId.replace(FX_PREFIX, ''));
                     if (stockBookTransaction) {
-                        await flagStockAccountForRebuildIfNeeded(stockBookTransaction);
+                        await this.botService.flagStockAccountForRebuildIfNeeded(stockBookTransaction);
                         break;
                     }
                 }

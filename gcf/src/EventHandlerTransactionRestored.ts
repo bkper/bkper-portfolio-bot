@@ -6,7 +6,7 @@ import { InterceptorOrderProcessor } from "./InterceptorOrderProcessor.js";
 export class EventHandlerTransactionRestored extends EventHandlerTransaction {
 
   async intercept(baseBook: Book, event: bkper.Event): Promise<Result> {
-    return await new InterceptorOrderProcessor().intercept(baseBook, event);
+    return await new InterceptorOrderProcessor(this.context).intercept(baseBook, event);
   }
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {

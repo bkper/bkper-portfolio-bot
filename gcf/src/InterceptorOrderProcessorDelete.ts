@@ -1,8 +1,13 @@
 import { Book, Transaction } from "bkper-js";
 import { CalculationModel } from './CalculationModel.js';
-import { flagStockAccountForRebuildIfNeeded, getStockBook, getBaseBook, getCalculationModel } from "./BotService.js";
-
+import { BotService } from "./BotService.js";
+import { AppContext } from "./AppContext.js";
 export abstract class InterceptorOrderProcessorDelete {
+  protected botService: BotService;
+
+  constructor(context: AppContext) {
+    this.botService = new BotService(context);
+  }
 
   protected cascadeDelete(book: Book, transaction: bkper.Transaction) {
     if (!book) {
@@ -11,13 +16,13 @@ export abstract class InterceptorOrderProcessorDelete {
     
     this.cascadeDeleteTransactions(book, transaction, ``);
     this.cascadeDeleteTransactions(book, transaction, `mtm_`);
-    this.cascadeDeleteTransactions(getBaseBook(book), transaction, `fx_`);
+    this.cascadeDeleteTransactions(this.botService.getBaseBook(book), transaction, `fx_`);
 
-    const stockBook = getStockBook(book);
-    if (getCalculationModel(stockBook) == CalculationModel.BOTH) {
+    const stockBook = this.botService.getStockBook(book);
+    if (this.botService.getCalculationModel(stockBook) == CalculationModel.BOTH) {
       this.cascadeDeleteTransactions(book, transaction, `hist_`);
       this.cascadeDeleteTransactions(book, transaction, `mtm_hist_`);
-      this.cascadeDeleteTransactions(getBaseBook(book), transaction, `fx_hist_`);
+      this.cascadeDeleteTransactions(this.botService.getBaseBook(book), transaction, `fx_hist_`);
     }
   }
 
@@ -49,10 +54,10 @@ export abstract class InterceptorOrderProcessorDelete {
 
 
   protected async deleteOnStockBook(financialBook: Book, remoteId: string): Promise<Transaction> {
-    let stockBook = getStockBook(financialBook);
+    let stockBook = this.botService.getStockBook(financialBook);
     const deletedStockTx = await this.deleteTransaction(stockBook, remoteId);
     if (deletedStockTx) {
-      await flagStockAccountForRebuildIfNeeded(deletedStockTx);
+      await this.botService.flagStockAccountForRebuildIfNeeded(deletedStockTx);
       this.cascadeDelete(financialBook, deletedStockTx.json());
     }
     return deletedStockTx;

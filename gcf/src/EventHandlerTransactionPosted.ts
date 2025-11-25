@@ -12,7 +12,7 @@ export class EventHandlerTransactionPosted {
 
   async handleEvent(event: bkper.Event): Promise<Result> {
     let baseBook = await this.context.bkper.getBook(event.bookId);
-    const response = await new InterceptorOrderProcessor().intercept(baseBook, event)
+    const response = await new InterceptorOrderProcessor(this.context).intercept(baseBook, event)
     if (response) {
       return response;
     }

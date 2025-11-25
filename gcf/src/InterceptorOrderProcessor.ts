@@ -1,10 +1,17 @@
 import { Account, AccountType, Amount, Book, Transaction } from "bkper-js";
 import { Result } from "./index.js";
-import { isStockBook, getStockBook, getCalculationModel } from "./BotService.js";
-import { CalculationModel } from './CalculationModel.js';
+import { BotService } from "./BotService.js";
+import { AppContext } from "./AppContext.js";
 import { COST_HIST_BASE_PROP, COST_BASE_PROP, COST_HIST_PROP, TRADE_EXC_RATE_HIST_PROP, TRADE_EXC_RATE_PROP, FEES_PROP, INSTRUMENT_PROP, INTEREST_PROP, ORDER_PROP, PRICE_HIST_PROP, PRICE_PROP, QUANTITY_PROP, SETTLEMENT_DATE, STOCK_FEES_ACCOUNT_PROP, TRADE_DATE_PROP } from "./constants.js";
+import { CalculationModel } from "./CalculationModel.js";
 
 export class InterceptorOrderProcessor {
+
+    private botService: BotService;
+
+    constructor(context: AppContext) {
+        this.botService = new BotService(context);
+    }
 
     async intercept(baseBook: Book, event: bkper.Event): Promise<Result> {
 
@@ -12,7 +19,7 @@ export class InterceptorOrderProcessor {
             return { result: false };
         }
 
-        if (isStockBook(baseBook)) {
+        if (this.botService.isStockBook(baseBook)) {
             return { result: false };
         }
 
@@ -44,8 +51,8 @@ export class InterceptorOrderProcessor {
     }
 
     protected async processSale(baseBook: Book, transactionPayload: bkper.Transaction): Promise<Result> {
-        const stockBook = getStockBook(baseBook);
-        const model = getCalculationModel(stockBook);
+        const stockBook = this.botService.getStockBook(baseBook);
+        const model = this.botService.getCalculationModel(stockBook);
         let exchangeAccount = this.getExchangeAccountOnSale(baseBook, transactionPayload);
         let responses: string[] = await Promise.all([
             this.postFees(baseBook, exchangeAccount, transactionPayload),
@@ -57,8 +64,8 @@ export class InterceptorOrderProcessor {
     }
 
     protected async processPurchase(baseBook: Book, transactionPayload: bkper.Transaction): Promise<Result> {
-        const stockBook = getStockBook(baseBook);
-        const model = getCalculationModel(stockBook);
+        const stockBook = this.botService.getStockBook(baseBook);
+        const model = this.botService.getCalculationModel(stockBook);
         let exchangeAccount = this.getExchangeAccountOnPurchase(baseBook, transactionPayload);
         let responses: string[] = await Promise.all([
             this.postFees(baseBook, exchangeAccount, transactionPayload),
