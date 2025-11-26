@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@bkper/bkper-api-types@^5.9.0":
-  version "5.9.0"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-5.9.0.tgz#c36c66f07cd1c74049fad419a5978374ad8059b3"
-  integrity sha512-yYSvorpAbg0UI8nNzcrpR+J9bdIzySVieonIxPrAbbwm8RQuc1BuS2AwUySNwCpHX944sGahZS/MAvOTGZtCZA==
+"@bkper/bkper-api-types@^5.32.0":
+  version "5.32.0"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-api-types/-/bkper-api-types-5.32.0.tgz#e46f3d1fed6bcc68baf68ea067620b2bedb68e41"
+  integrity sha512-d5u0cWAWwQBawxGO2VMDjOvrgsPD8g2QRwVvpIR92uoKAui0IogkalQ0AL8yDlBt/79stB9QzRccby6O//Yssg==
 
-"@bkper/bkper-app-types@^3.34.2":
-  version "3.34.2"
-  resolved "https://registry.yarnpkg.com/@bkper/bkper-app-types/-/bkper-app-types-3.34.2.tgz#5f9a83927aa7519abd3c624eb2e7de266ee09b2b"
-  integrity sha512-MEPpAEA+UaJ5m9DMQqhPgMBSUvjbzE2xwEljbbtQxXqpgHLT/WYoLnWV/9SSBEgLsNo3ymf05BQJv3WTQKsV8g==
+"@bkper/bkper-gs-types@^3.38.2":
+  version "3.38.2"
+  resolved "https://registry.yarnpkg.com/@bkper/bkper-gs-types/-/bkper-gs-types-3.38.2.tgz#7d1566f8e79c09931147999cf4d388ee8b005953"
+  integrity sha512-rOylJ0/svAaCGFmwjzWmLL0V+Q+Be3l1tOvLjU0ukU8quzmLJWFeIv//Y0LdbT/NSnGAlEVkNzae9xeuuM8ILg==
   dependencies:
     "@types/google-apps-script" "*"
 
@@ -63,9 +63,9 @@
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
 "@types/google-apps-script@*":
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/@types/google-apps-script/-/google-apps-script-1.0.21.tgz#70a44d529872fd6b0edc017e5eea796b92a71e15"
-  integrity sha512-voTSdmYQjDweXWj+g2Sz8WBPSgAL7gKKEEbws5dl/c1Jhu7YoBVLnYr1ctg6GAbZy9+x+RQMzjb2ofk51s3adQ==
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@types/google-apps-script/-/google-apps-script-2.0.8.tgz#65f5ecdd9c64daaad283f027b0cf57abc9a8604c"
+  integrity sha512-mGPmzzdgBu1DlwrjOhFQ8u0se6AF/z4OpaTzOGwNKxwXZjE7J+IssfE3oL24j/S/p6aFiSTIptHZvbyqeZD8vA==
 
 "@types/minimatch@^3.0.3":
   version "3.0.3"
