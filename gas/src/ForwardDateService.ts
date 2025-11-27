@@ -76,7 +76,7 @@ namespace ForwardDateService {
             // Return forwarded transaction to previous state
             transaction
                 .setDate(previousStateTx.getDate())
-                .setProperties(previousStateTx.getProperties())
+                .setVisibleProperties(previousStateTx.getProperties())
                 .deleteProperty(FWD_TX_PROP)
                 .deleteProperty(FWD_TX_REMOTE_IDS_PROP)
                 .update()
@@ -287,7 +287,7 @@ namespace ForwardDateService {
             .to(transaction.getDebitAccount())
             .setDate(transaction.getDate())
             .setDescription(transaction.getDescription())
-            .setProperties(transaction.getProperties())
+            .setVisibleProperties(transaction.getProperties())
             .setProperty(FWD_TX_PROP, transaction.getId())
             .setProperty(FWD_TX_REMOTE_IDS_PROP, JSON.stringify(remoteIds))
         ;
