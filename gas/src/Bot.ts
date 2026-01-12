@@ -1,4 +1,5 @@
 BkperApp.setApiKey(PropertiesService.getScriptProperties().getProperty('API_KEY'));
+BkperApp.setAgentId('stock-bot');
 
 const STOCK_BOOK_PROP = 'stock_book';
 const STOCK_EXC_CODE_PROP = 'stock_exc_code';
