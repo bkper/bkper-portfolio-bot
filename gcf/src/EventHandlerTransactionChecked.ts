@@ -58,7 +58,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
     let stockAccount = await this.getConnectedStockAccount(financialBook, stockBook, financialCreditAccount);
 
-    if (stockAccount) {
+    if (stockAccount && !stockAccount.isArchived()) {
       // Selling
       let stockSellAccount = await stockBook.getAccount(constants.STOCK_SELL_ACCOUNT_NAME);
       if (stockSellAccount == null) {
